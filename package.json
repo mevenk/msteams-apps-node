@@ -7,7 +7,20 @@
     "start": "tsc && node dist/msteamsapps.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "mevenk",
+    "mevenk-apps",
+    "express",
+    "microsoft-teams",
+    "msteams",
+    "typescript"
+  ],
   "author": "Venkatesh Kolisetty",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mevenk/msteams-apps-node.git"
+  },
+  "homepage": "https://github.com/mevenk/msteams-apps-node",
   "license": "ISC",
   "devDependencies": {
     "tslint": "^5.20.1",
