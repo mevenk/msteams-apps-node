@@ -1,0 +1,24 @@
+{
+  "name": "msteamsapps",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "MS Teams webhooks",
+  "main": "dist/msteamsapps.js",
+  "scripts": {
+    "start": "tsc && node dist/msteamsapps.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Venkatesh Kolisetty",
+  "license": "ISC",
+  "devDependencies": {
+    "tslint": "^5.20.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@angular/common": "^9.1.6",
+    "@angular/core": "^9.1.6",
+    "@types/express": "^4.17.6",
+    "express": "^4.17.1",
+    "rxjs": "^6.5.5",
+    "zone.js": "^0.10.3"
+  }
+}
