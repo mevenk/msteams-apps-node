@@ -40,7 +40,7 @@ export class Logger {
 
         if (!CommonUtils.isUndefined(loggingData)) {
             loggingData.forEach((element: { toString: () => string; }) => {
-                loggingDataString += loggingDataString.concat(element.toString() + " ");
+                loggingDataString += loggingDataString.concat(element.toString(), " ");
             });
         }
 

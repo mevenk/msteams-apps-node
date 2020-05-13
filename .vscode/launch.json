@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "env": {
+                "MS_TEAMS_WEBHOOK_APP_HEADER_AUTHORIZATION_TOKEN_SECRET": "=sh67+mBnrxJXYGu0dpFcwdcUPQ7oa/PuCd111GY+JCk=",
+                "set MS_TEAMS_WEBHOOK_APP_ENV": "DEV",
+                "set MS_TEAMS_WEBHOOK_APP_HTTPS_REQUIRED": "false",
+                "set MS_TEAMS_WEBHOOK_APP_HTTPS_KEY_PATH": null,
+                "set MS_TEAMS_WEBHOOK_APP_HTTPS_CERT_PATH": null,
+                "set MS_TEAMS_WEBHOOK_APP_PORT": "5959"
+            },
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\src\\app\\msteamsapps.ts",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ]
+        }
+    ]
+}
