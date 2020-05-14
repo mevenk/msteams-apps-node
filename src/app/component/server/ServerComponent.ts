@@ -120,7 +120,8 @@ export class ServerComponent {
     private static checkRequest(req: any, correlationId: string | null): void {
         req.headers[ServerComponent.APP_CORRELATION_ID] = correlationId;
         req.res.set(ServerComponent.APP_CORRELATION_ID, correlationId);
-        Logger.log("Request:", correlationId, "[", req.method, "]", req.baseUrl, req.originalUrl, req.host, req.hostname);
+        Logger.log("Request:", correlationId, "[", req.method, "]",
+            req.baseUrl, req.originalUrl, req.host, req.hostname);
         Logger.log("Params", CommonUtils.prettyPrintJSON(req.params));
         Logger.log("Query", CommonUtils.prettyPrintJSON(req.query));
         Logger.log("Raw headers:", CommonUtils.prettyPrintJSON(req.rawHeaders));

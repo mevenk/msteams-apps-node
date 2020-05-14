@@ -15,6 +15,6 @@ export class CommonUtils {
     }
 
     public static prettyPrintJSONReduce(json: any): string {
-        return CommonUtils.prettyPrintJSONReduceTo(json, 1000);
+        return CommonUtils.prettyPrintJSONReduceTo(json, 600);
     }
 }

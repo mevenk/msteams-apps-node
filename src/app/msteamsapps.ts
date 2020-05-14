@@ -1,5 +1,5 @@
-import { ApplicationInitiator } from "./ApplicationInitiator";
 import { SystemUtils } from "./commons/SystemUtils";
+import { ApplicationInitiator } from "./initiator/ApplicationInitiator";
 import { Logger } from "./logging/Logger";
 
 Logger.log("Hello " + SystemUtils.username());

@@ -4,27 +4,27 @@ import { LogType } from "./LogType";
 
 export class Logger {
 
-    public static log(...loggingData: any[]): void {
+    public static log(...loggingData: any): void {
         Logger.doLog(LogType.LOG, loggingData);
     }
 
-    public static info(...loggingData: any[]): void {
+    public static info(...loggingData: any): void {
         Logger.doLog(LogType.INFO, loggingData);
     }
 
-    public static debug(...loggingData: any[]): void {
+    public static debug(...loggingData: any): void {
         Logger.doLog(LogType.DEBUG, loggingData);
     }
 
-    public static warn(...loggingData: any[]): void {
+    public static warn(...loggingData: any): void {
         Logger.doLog(LogType.WARN, loggingData);
     }
 
-    public static error(...loggingData: any[]): void {
+    public static error(...loggingData: any): void {
         Logger.doLog(LogType.ERROR, loggingData);
     }
 
-    public static trace(...loggingData: any[]): void {
+    public static trace(...loggingData: any): void {
         Logger.doLog(LogType.TRACE, loggingData);
     }
 
@@ -34,14 +34,14 @@ export class Logger {
         return Logger.DATE_PIPE.transform(new Date(), "d/M/y H:m:s.S") + ": ";
     }
 
-    private static doLog(logType: LogType, ...loggingData: any[]): void {
+    private static doLog(logType: LogType, loggingData: any[]): void {
 
         let loggingDataString = Logger.logDate();
 
         if (!CommonUtils.isUndefined(loggingData)) {
-            loggingData.forEach((element: { toString: () => string; }) => {
-                loggingDataString += loggingDataString.concat(element.toString(), " ");
-            });
+            for (const element of loggingData) {
+                loggingDataString += " " + element;
+            }
         }
 
         switch (logType) {
