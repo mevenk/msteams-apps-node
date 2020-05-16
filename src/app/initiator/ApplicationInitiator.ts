@@ -2,6 +2,7 @@ import { CommonUtils } from "../commons/CommonUtils";
 import { SystemUtils } from "../commons/SystemUtils";
 import { ServerComponent } from "../component/server/ServerComponent";
 import { Logger } from "../logging/Logger";
+import { LoggingTracker } from "../logging/LoggingTracker";
 import { ApplicationComponents } from "./ApplicationComponents";
 
 export class ApplicationInitiator {
@@ -10,12 +11,15 @@ export class ApplicationInitiator {
         ApplicationInitiator.validate();
         const ENV: any = SystemUtils.applicationEnvironment();
         const PORT: number = SystemUtils.applicationPort();
-        Logger.log("Environment: ", ENV);
-        Logger.log("port: ", PORT);
-        Logger.log("Server status", ServerComponent.startServer(PORT));
-        Logger.info("No of components:", ApplicationInitiator.startComponents());
+        this.LOGGER.log(this.LOGGING_TRACKER, "Environment: ", ENV);
+        this.LOGGER.log(this.LOGGING_TRACKER, "port: ", PORT);
+        this.LOGGER.log(this.LOGGING_TRACKER, "Server status", ServerComponent.startServer(PORT));
+        this.LOGGER.info(this.LOGGING_TRACKER, "No of components:", ApplicationInitiator.startComponents());
         return true;
     }
+
+    private static readonly LOGGER: Logger = Logger.getLogger("src/app/initiator/ApplicationInitiator");
+    private static readonly LOGGING_TRACKER: LoggingTracker = new LoggingTracker("ApplicationInitiator");
 
     private static validate(): void {
         if (CommonUtils.isUndefined(SystemUtils.applicationEnvironment())) {
@@ -30,7 +34,7 @@ export class ApplicationInitiator {
     private static startComponents(): number {
         let noOfComponents = 0;
         ApplicationComponents.getApplicationComponents().forEach((component) => {
-            Logger.info("Starting", component.name, "[" + component.constructor.name + "]");
+            this.LOGGER.info(this.LOGGING_TRACKER, "Starting", component.name, "[" + component.constructor.name + "]");
             if (!component.isValid()) {
                 throw new Error(component.name + " component not valid!!!");
             }

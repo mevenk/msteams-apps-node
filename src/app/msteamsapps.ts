@@ -1,8 +1,12 @@
 import { SystemUtils } from "./commons/SystemUtils";
 import { ApplicationInitiator } from "./initiator/ApplicationInitiator";
 import { Logger } from "./logging/Logger";
+import { LoggingTracker } from "./logging/LoggingTracker";
 
-Logger.log("Hello " + SystemUtils.username());
-Logger.log("Initializing....");
-Logger.log("Initiated?" + ApplicationInitiator.initiate());
-Logger.log("Initiation called");
+const LOGGER: Logger = Logger.getLogger("msteamsapps");
+const LOGGING_TRACKER: LoggingTracker = new LoggingTracker("msteamsapps");
+
+LOGGER.log(LOGGING_TRACKER, "Hello " + SystemUtils.username());
+LOGGER.log(LOGGING_TRACKER, "Initializing....");
+LOGGER.log(LOGGING_TRACKER, "Initiated?" + ApplicationInitiator.initiate());
+LOGGER.log(LOGGING_TRACKER, "Initiation called");

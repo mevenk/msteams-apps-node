@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { Logger } from "./../../logging/Logger";
+import { LoggingTracker } from "./../../logging/LoggingTracker";
 import { CommonUtils } from "./../CommonUtils";
 
 export class HTTPRequest<BODY, RESPONSE> {
@@ -8,8 +9,16 @@ export class HTTPRequest<BODY, RESPONSE> {
         return status === 200;
     }
 
-    private response: IHTTPResponse<RESPONSE> =
-        { data: undefined, status: -1, statusText: undefined, headers: undefined };
+    private static readonly LOGGER: Logger = Logger.getLogger("src/app/commons/http/HTTPRequest");
+
+    private static generateLoggingTracker<BODY, RESPONSE>(httpRequest: HTTPRequest<BODY, RESPONSE>): LoggingTracker {
+        const logTracker: Map<string, string> = new Map();
+        logTracker.set("URL", httpRequest.url.slice(0, 25));
+        logTracker.set("method", httpRequest.httpRequestMethod);
+        const loggingTracker: LoggingTracker = new LoggingTracker(
+            LoggingTracker.generateTrackingId("HTTPRequest"), logTracker);
+        return loggingTracker;
+    }
 
     constructor(public url: string, public httpRequestMethod: HTTPRequestMethod) {
 
@@ -19,33 +28,48 @@ export class HTTPRequest<BODY, RESPONSE> {
 
     public set headers(headers: Array<{ key: string, value: string | number }>) { this.headers = headers; }
 
-    //Need to return Promise to make it async
-    public getResponse(): IHTTPResponse<RESPONSE | undefined> {
-        const axiosRequestConfig: AxiosRequestConfig = {};
-        axiosRequestConfig.url = this.url;
-        axiosRequestConfig.method = this.httpRequestMethod;
-        const promiseResponse = axios.request<Request, AxiosResponse<RESPONSE | undefined>>(axiosRequestConfig);
-        promiseResponse.then((response: AxiosResponse<RESPONSE | undefined>) => {
-            Logger.log("Server response:", CommonUtils.prettyPrintJSONReduceTo(response, 200));
-            this.response.data = response.data;
-            this.response.status = response.status;
-            this.response.statusText = response.statusText;
-            this.response.headers = response.headers;
-            Logger.log("Response status:", this.response.status);
-            Logger.log("Response:", CommonUtils.prettyPrintJSONReduceTo(this.response, 200));
+    public getResponse(): Promise<IHTTPResponse<RESPONSE>> {
+        return new Promise<IHTTPResponse<RESPONSE>>((resolve, reject) => {
+            const loggingTracker: LoggingTracker = HTTPRequest.generateLoggingTracker(this);
+            const axiosRequestConfig: AxiosRequestConfig = {};
+            axiosRequestConfig.url = this.url;
+            axiosRequestConfig.method = this.httpRequestMethod;
+            let responseToSend: IHTTPResponse<RESPONSE>;
+            const promiseResponse = axios.request<Request, AxiosResponse<RESPONSE | undefined>>(axiosRequestConfig);
+            promiseResponse.then((response: AxiosResponse<RESPONSE | undefined>) => {
+                HTTPRequest.LOGGER.log(loggingTracker,
+                    "Server response:", CommonUtils.prettyPrintJSONReduceTo(response, 200));
+                responseToSend = {
+                    data: response.data,
+                    headers: response.headers, status: response.status, statusText: response.statusText,
+                };
+                HTTPRequest.LOGGER.log(loggingTracker, "Response status:", responseToSend.status);
+                HTTPRequest.LOGGER.log(
+                    loggingTracker, "Response:", CommonUtils.prettyPrintJSONReduceTo(responseToSend, 200));
+                resolve(responseToSend);
+            }).catch((error: any) => {
+                reject(error);
+            });
         });
-        return this.response;
+
     }
 
-    public getStatus(): number {
-        if (this.response.status === -1) {
-            this.getResponse();
-        }
-        return this.response.status;
+    public getStatus(): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            this.getResponse()
+                .then((response: IHTTPResponse<RESPONSE>) => { resolve(response.status); })
+                .catch((error: any) => { reject(error); });
+        });
     }
 
-    public isSuccess(): boolean {
-        return HTTPRequest.isStatusSuccess(this.response.status);
+    public isSuccess(): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.getStatus()
+                .then((status: number) => {
+                    resolve(HTTPRequest.isStatusSuccess(status));
+                })
+                .catch((error: any) => { reject(error); });
+        });
     }
 
 }
